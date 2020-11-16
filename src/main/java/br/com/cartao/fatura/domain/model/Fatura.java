@@ -3,8 +3,10 @@ package br.com.cartao.fatura.domain.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "fatura")
@@ -41,5 +43,18 @@ public class Fatura {
 
     public void adicionaGasto(Gastos gastos){
         this.gastos.add(gastos);
+    }
+
+    public List<Gastos> ultimosGastosOrdenadosPorData(){
+
+        List<Gastos> gastosOrdenadosPorData = this.gastos.stream()
+                // +1
+                .filter(gastos -> LocalDate.now().getMonth().equals(gastos.getEfetivadaEm().getMonth()))
+                // +1
+                .sorted(Gastos::compareTo)
+                // +1
+                .collect(Collectors.toList());
+
+        return gastosOrdenadosPorData;
     }
 }

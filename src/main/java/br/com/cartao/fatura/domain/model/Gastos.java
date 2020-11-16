@@ -1,7 +1,5 @@
 package br.com.cartao.fatura.domain.model;
 
-import br.com.cartao.fatura.domain.listener.TransacaoCartaoListener;
-import br.com.cartao.fatura.listeners.TransacaoListener;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "gastos")
-public class Gastos {
+public class Gastos implements Comparable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -105,5 +103,19 @@ public class Gastos {
                 ", email='" + email + '\'' +
                 ", efetivadaEm=" + efetivadaEm +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+
+        Gastos gastos = (Gastos)o;
+
+        if (this.efetivadaEm.isAfter(gastos.getEfetivadaEm())){
+            return 1;
+        }
+        else if (this.efetivadaEm.isBefore(gastos.getEfetivadaEm())){
+            return -1;
+        }
+        return 0;
     }
 }
