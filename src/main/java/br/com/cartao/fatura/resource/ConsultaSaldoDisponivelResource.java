@@ -1,7 +1,7 @@
 package br.com.cartao.fatura.resource;
 
-import br.com.cartao.fatura.domain.model.Fatura;
 import br.com.cartao.fatura.domain.integration.CartaoResponseIntegracao;
+import br.com.cartao.fatura.domain.model.Fatura;
 import br.com.cartao.fatura.domain.response.LimiteDisponivelResponseDto;
 import br.com.cartao.fatura.repository.FaturaRepository;
 import br.com.cartao.fatura.service.BuscaCartaoIntegracaoService;
@@ -36,12 +36,13 @@ public class ConsultaSaldoDisponivelResource {
 
     @GetMapping("/limites-disponiveis/{id}")
     public ResponseEntity<?> consultaLimiteDisponivel(@PathVariable(value = "id",required = true)String idCartao){
-
+        // +1
         logger.info("Requisição para consultar saldo disponivel recebdio para o cartaoId: {}", OfuscaDadosSensiveis.executa(idCartao));
         // +1
         Optional<CartaoResponseIntegracao> buscaCartao = buscaCartaoIntegracaoService.busca(idCartao);
         // +1
         if(buscaCartao.isEmpty()){
+            logger.info("Cartão solicidade não encontrado, id: {}", OfuscaDadosSensiveis.executa(idCartao));
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
@@ -51,6 +52,7 @@ public class ConsultaSaldoDisponivelResource {
         // +1
         LimiteDisponivelResponseDto limiteDisponivelResponseDto = new LimiteDisponivelResponseDto(buscaCartao.get(), faturaCartaoSolicitado);;
 
+        logger.info("Limite disponivel calculado com sucesso: {}", limiteDisponivelResponseDto.getLimiteDisponivel());
         return ResponseEntity.ok().body(limiteDisponivelResponseDto);
     }
 }

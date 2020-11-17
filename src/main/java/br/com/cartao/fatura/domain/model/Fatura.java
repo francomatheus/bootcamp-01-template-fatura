@@ -3,6 +3,7 @@ package br.com.cartao.fatura.domain.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +46,7 @@ public class Fatura {
         this.gastos.add(gastos);
     }
 
-    public List<Gastos> ultimosGastosOrdenadosPorData(){
-
+    public List<Gastos> retornaGastosCorrentesAtuaisOrdenados(){
         List<Gastos> gastosOrdenadosPorData = this.gastos.stream()
                 // +1
                 .filter(gastos -> LocalDate.now().getMonth().equals(gastos.getEfetivadaEm().getMonth()))
@@ -56,5 +56,17 @@ public class Fatura {
                 .collect(Collectors.toList());
 
         return gastosOrdenadosPorData;
+    }
+
+    public BigDecimal retornaValorTotalFaturaCorrente(){
+        return this.gastos.stream()
+                // +1
+                .filter(gastos -> LocalDate.now().getMonth().equals(gastos.getEfetivadaEm().getMonth()))
+                .map(gastos1 -> {return gastos1.getValor();})
+                .reduce(BigDecimal.ZERO,BigDecimal::add);
+    }
+
+    public Integer numeroTotalDeCompras() {
+        return retornaGastosCorrentesAtuaisOrdenados().size();
     }
 }

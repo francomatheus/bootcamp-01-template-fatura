@@ -35,6 +35,7 @@ public class HabilitaFaturaResource {
 
         habilitaTransacaoService.habilitaCartao(transacaoHabilitaIntegracaoRequest);
 
+        logger.info("Fatura habilitada com sucesso!");
         return ResponseEntity.ok().build();
     }
 }

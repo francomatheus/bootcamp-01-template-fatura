@@ -2,19 +2,24 @@ package br.com.cartao.fatura.domain.response;
 
 import br.com.cartao.fatura.domain.model.Fatura;
 import br.com.cartao.fatura.domain.model.Gastos;
+import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class FaturaResponseDto {
 
     private String id;
     private String cartaoId;
+    private BigDecimal valorTotal;
+    private Integer numeroElementos;
     private List<Gastos> gastos;
 
     public FaturaResponseDto(Fatura fatura) {
-        int idCartaoSize = fatura.getIdCartao().length();
         this.id = fatura.getId();
-        this.cartaoId= "******************".concat(fatura.getIdCartao().substring(idCartaoSize-4, idCartaoSize));
+        this.valorTotal = fatura.retornaValorTotalFaturaCorrente();
+        this.cartaoId= OfuscaDadosSensiveis.executa(fatura.getIdCartao());
+        this.numeroElementos = fatura.numeroTotalDeCompras();
         this.gastos = fatura.getGastos();
     }
 
@@ -24,6 +29,10 @@ public class FaturaResponseDto {
 
     public String getCartaoId() {
         return cartaoId;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
     }
 
     public List<Gastos> getGastos() {

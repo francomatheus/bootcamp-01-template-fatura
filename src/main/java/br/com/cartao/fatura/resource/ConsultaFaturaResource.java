@@ -3,6 +3,7 @@ package br.com.cartao.fatura.resource;
 import br.com.cartao.fatura.domain.model.Fatura;
 import br.com.cartao.fatura.domain.response.FaturaResponseDto;
 import br.com.cartao.fatura.repository.FaturaRepository;
+import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class ConsultaFaturaResource {
 
     private static Logger logger = LoggerFactory.getLogger(ConsultaFaturaResource.class);
-
+    // +1
     private final FaturaRepository faturaRepository;
 
     public ConsultaFaturaResource(FaturaRepository faturaRepository) {
@@ -28,16 +29,19 @@ public class ConsultaFaturaResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> consultaFaturaCorrente(@PathVariable(value = "id",required = true) String idCartao){
-        logger.info("Requisição para consultar fatura recebida, para o cartão com final: {}", idCartao.substring(idCartao.length()-4, idCartao.length()));
-
+        // +1
+        logger.info("Requisição para consultar fatura recebida, para o cartão com final: {}", OfuscaDadosSensiveis.executa(idCartao));
+        // +1
         Optional<Fatura> faturaBuscadaPeloIdCartao = faturaRepository.findByIdCartao(idCartao);
-
+        // +1
         if (faturaBuscadaPeloIdCartao.isEmpty()){
+            logger.info("Fatura não encontrada para o idCartao: {}", OfuscaDadosSensiveis.executa(idCartao));
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Fatura não encontrada para idCartao solicitado.");
         }
-
+        // +1
         FaturaResponseDto faturaResponseDto =  new FaturaResponseDto(faturaBuscadaPeloIdCartao.get());
 
+        logger.info("Fatura localizada, id: ", faturaResponseDto.getId());
         return ResponseEntity.status(HttpStatus.OK). body(faturaResponseDto);
     }
 

@@ -45,7 +45,7 @@ public class LimiteDisponivelResponseDto {
             return new ArrayList<>();
         }
 
-        List<Gastos> ultimosGastosOrdenadosPorData = faturaCartaoSolicitado.get().ultimosGastosOrdenadosPorData();
+        List<Gastos> ultimosGastosOrdenadosPorData = faturaCartaoSolicitado.get().retornaGastosCorrentesAtuaisOrdenados();
 
         int tamanhoListaUltimosGastos = ultimosGastosOrdenadosPorData.size();
 
