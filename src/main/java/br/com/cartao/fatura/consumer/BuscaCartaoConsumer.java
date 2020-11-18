@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface BuscaCartaoConsumer {
 
     @RequestMapping(method = RequestMethod.GET, path = "/api/cartoes/{id}")
-    public CartaoResponseIntegracao buscaCartao(@PathVariable(value = "id",required = true) String idCartao);
+    public CartaoResponseIntegracao buscaCartao(@PathVariable(value = "id",required = true) String numeroCartao);
 }

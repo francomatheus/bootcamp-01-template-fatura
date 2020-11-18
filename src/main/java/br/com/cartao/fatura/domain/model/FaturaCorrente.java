@@ -3,7 +3,6 @@ package br.com.cartao.fatura.domain.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class FaturaCorrente {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    @NotBlank
-    private String idCartao;
+    @OneToOne
+    private Cartao cartao;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     List<Gastos> gastos = new ArrayList<>();
@@ -26,8 +25,8 @@ public class FaturaCorrente {
     public FaturaCorrente() {
     }
 
-    public FaturaCorrente(String idCartao, List<Gastos> gastos) {
-        this.idCartao = idCartao;
+    public FaturaCorrente(Cartao cartao, List<Gastos> gastos) {
+        this.cartao = cartao;
         this.gastos = gastos;
     }
 
@@ -35,11 +34,15 @@ public class FaturaCorrente {
         return id;
     }
 
-    public String getIdCartao() {
-        return idCartao;
+    public Cartao getCartao() {
+        return cartao;
     }
 
     public List<Gastos> getGastos() {
         return gastos;
+    }
+
+    public String numeroCartao(){
+        return this.cartao.getNumeroCartao();
     }
 }

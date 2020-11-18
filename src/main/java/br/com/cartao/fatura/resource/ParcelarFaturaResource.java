@@ -1,9 +1,11 @@
 package br.com.cartao.fatura.resource;
 
 import br.com.cartao.fatura.domain.integration.CartaoResponseIntegracao;
+import br.com.cartao.fatura.domain.model.Cartao;
 import br.com.cartao.fatura.domain.model.ParcelaFatura;
 import br.com.cartao.fatura.domain.request.ParcelarFaturaRequest;
 import br.com.cartao.fatura.domain.response.ParcelarFaturaResponseDto;
+import br.com.cartao.fatura.repository.CartaoRepository;
 import br.com.cartao.fatura.repository.ParcelaFaturaRepository;
 import br.com.cartao.fatura.service.BuscaCartaoIntegracaoService;
 import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
@@ -31,11 +33,11 @@ public class ParcelarFaturaResource {
     private static Logger logger = LoggerFactory.getLogger(ParcelarFaturaResource.class);
 
     // +1
-    private final BuscaCartaoIntegracaoService buscaCartaoIntegracaoService;
+    private final CartaoRepository cartaoRepository;
     private final EntityManager manager;
 
-    public ParcelarFaturaResource(BuscaCartaoIntegracaoService buscaCartaoIntegracaoService, EntityManager manager) {
-        this.buscaCartaoIntegracaoService = buscaCartaoIntegracaoService;
+    public ParcelarFaturaResource(CartaoRepository cartaoRepository, EntityManager manager) {
+        this.cartaoRepository = cartaoRepository;
         this.manager = manager;
     }
 
@@ -47,12 +49,12 @@ public class ParcelarFaturaResource {
                                                 @RequestBody @Valid ParcelarFaturaRequest parcelarFaturaRequest,
                                                 UriComponentsBuilder uriComponentsBuilder){
 
-        logger.info("Requisição para parcelar fatura: {}, do cartão: {} recebida", idFatura,OfuscaDadosSensiveis.executa(idCartao));
+        logger.info("Requisição para parcelar fatura: {}, do cartão: {} recebida", idFatura,idCartao);
         // +1
-        Optional<CartaoResponseIntegracao> cartaoBuscado = buscaCartaoIntegracaoService.busca(idCartao);
+        Optional<Cartao> cartaoBuscado = cartaoRepository.findById(idCartao);
         // +1
         if (cartaoBuscado.isEmpty()){
-            logger.info("Cartão não existe, id: {}", OfuscaDadosSensiveis.executa(idCartao));
+            logger.info("Cartão não existe, id: {}", idCartao);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         // +1
@@ -62,7 +64,7 @@ public class ParcelarFaturaResource {
         // +1
         ParcelarFaturaResponseDto parcelarFaturaResponseDto = new ParcelarFaturaResponseDto(parcelaFatura);
 
-        logger.info("Parcelar fatura aceita com sucesso, id: {}");
+        logger.info("Parcelar fatura aceita com sucesso, id: {}", idCartao);
         return ResponseEntity
                 .created(uriComponentsBuilder.path("/v1/cartoes/{idCartao}/faturas/{idFatura}/parcelar/{id}").buildAndExpand(idCartao, idFatura, parcelarFaturaResponseDto.getId()).toUri())
                 .build();

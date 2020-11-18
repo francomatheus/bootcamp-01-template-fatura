@@ -7,6 +7,7 @@ import br.com.cartao.fatura.domain.model.ParcelaFatura;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ public class ParcelarFaturaRequest {
         return valor;
     }
     // +1
+    @Transactional
     public ParcelaFatura toModel(String idFatura, EntityManager manager){
         // +1
         Fatura fatura = manager.find(Fatura.class, idFatura);
@@ -42,7 +44,9 @@ public class ParcelarFaturaRequest {
         // +1
         List<Gastos> gastosFaturaCorrente = fatura.retornaGastosCorrentesAtuaisOrdenados();
         // +1
-        FaturaCorrente faturaCorrente = new FaturaCorrente(fatura.getIdCartao(), gastosFaturaCorrente);
+        FaturaCorrente faturaCorrente = new FaturaCorrente(fatura.getCartao(), gastosFaturaCorrente);
+
+        fatura.adicionaFaturaCorrente(faturaCorrente);
 
         return new ParcelaFatura(this.quantidade, this.valor, faturaCorrente);
     }

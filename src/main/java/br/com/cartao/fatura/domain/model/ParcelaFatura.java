@@ -1,5 +1,6 @@
 package br.com.cartao.fatura.domain.model;
 
+import br.com.cartao.fatura.domain.enums.StatusParcelarFatura;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -21,6 +22,11 @@ public class ParcelaFatura {
     private Integer quantidade;
     @NotNull
     private BigDecimal valor;
+
+    private Boolean avisoLegado;
+    @Enumerated(EnumType.STRING)
+    private StatusParcelarFatura statusParcelarFatura;
+
     @Column(unique = true)
     @NotNull
     private Integer mesCorrente = LocalDate.now().getMonthValue();
@@ -36,6 +42,8 @@ public class ParcelaFatura {
         this.quantidade = quantidade;
         this.valor = valor;
         this.fatura = fatura;
+        this.avisoLegado = Boolean.FALSE;
+        this.statusParcelarFatura = StatusParcelarFatura.ANALISANDO;
     }
 
     public String getId() {
@@ -54,11 +62,31 @@ public class ParcelaFatura {
         return mesCorrente;
     }
 
+    public Boolean getAvisoLegado() {
+        return avisoLegado;
+    }
+
+    public StatusParcelarFatura getStatusParcelarFatura() {
+        return statusParcelarFatura;
+    }
+
     public FaturaCorrente getFatura() {
         return fatura;
     }
 
+    public void avisoSistemaLegadoComSucesso(){
+        this.avisoLegado = Boolean.TRUE;
+    }
+
+    public void mudarStatusParcelaFatura(StatusParcelarFatura statusParcelarFatura){
+        this.statusParcelarFatura = statusParcelarFatura;
+    }
+
     public BigDecimal calculaValorFatura(){
         return this.valor.multiply(BigDecimal.valueOf(this.quantidade));
+    }
+
+    public String numeroCartao(){
+        return this.fatura.numeroCartao();
     }
 }

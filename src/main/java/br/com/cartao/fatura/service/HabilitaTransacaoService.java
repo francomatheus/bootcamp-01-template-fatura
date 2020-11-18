@@ -3,6 +3,7 @@ package br.com.cartao.fatura.service;
 import br.com.cartao.fatura.consumer.TransacaoHabilitaConsumer;
 import br.com.cartao.fatura.domain.request.TransacaoHabilitaIntegracaoRequest;
 import br.com.cartao.fatura.domain.response.TransacaoHabilitaIntegracaoResponse;
+import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,10 @@ public class HabilitaTransacaoService {
         logger.info("Inicio da Service que habilita as transações, para o usuario: {}.",transacaoHabilitaIntegracaoRequest.getEmail());
         try{
             TransacaoHabilitaIntegracaoResponse habilita = transacaoHabilitaConsumer.habilita(transacaoHabilitaIntegracaoRequest);
-            logger.info("Habilitação realizada com sucesso para usuario: {}", habilita.getEmail());
+            logger.info("Habilitação realizada com sucesso para cartao: {}", OfuscaDadosSensiveis.executa(habilita.getId()));
             return Optional.ofNullable(habilita);
         }catch (FeignException exception){
-            logger.warn("Erro ao habilitar o cartão do usuario: {}", transacaoHabilitaIntegracaoRequest.getEmail());
+            logger.warn("Erro ao habilitar o cartão : {}", OfuscaDadosSensiveis.executa(transacaoHabilitaIntegracaoRequest.getId()));
             logger.warn("Erro: {}", exception.getMessage());
             return Optional.empty();
         }

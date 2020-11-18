@@ -1,5 +1,9 @@
 package br.com.cartao.fatura.domain.request;
 
+import br.com.cartao.fatura.domain.model.Cartao;
+import org.springframework.util.Assert;
+
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotBlank;
 
 public class TransacaoHabilitaRequest {
@@ -22,7 +26,10 @@ public class TransacaoHabilitaRequest {
         return email;
     }
 
-    public TransacaoHabilitaIntegracaoRequest toIntegracao(){
-        return new TransacaoHabilitaIntegracaoRequest(this.idCartao, this.email);
+    public TransacaoHabilitaIntegracaoRequest toIntegracao(EntityManager manager){
+        Cartao cartao = manager.find(Cartao.class, this.idCartao);
+        Assert.notNull(cartao, "Cartão não encontrado para o idCartao solicitado");
+
+        return new TransacaoHabilitaIntegracaoRequest(cartao.getNumeroCartao(), this.email);
     }
 }

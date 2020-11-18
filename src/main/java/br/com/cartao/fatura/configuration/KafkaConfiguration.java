@@ -1,5 +1,6 @@
 package br.com.cartao.fatura.configuration;
 
+import br.com.cartao.fatura.domain.listener.CartaoPropostaListener;
 import br.com.cartao.fatura.domain.listener.TransacaoCartaoListener;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -35,15 +36,31 @@ public class KafkaConfiguration {
     @Bean
     public ConsumerFactory<String, TransacaoCartaoListener> consumerFactory(){
         StringDeserializer stringDeserializer = new StringDeserializer();
-        JsonDeserializer<TransacaoCartaoListener> jsonDeserializer = new JsonDeserializer<>(TransacaoCartaoListener.class, false);
+        JsonDeserializer jsonDeserializer = new JsonDeserializer( TransacaoCartaoListener.class,false);
 
         return new DefaultKafkaConsumerFactory<String, TransacaoCartaoListener>(properties(), stringDeserializer, jsonDeserializer);
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, TransacaoCartaoListener> kafkaListenerContainerFactory(){
-        ConcurrentKafkaListenerContainerFactory<String, TransacaoCartaoListener> factory = new ConcurrentKafkaListenerContainerFactory();
+        ConcurrentKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory();
         factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+
+    @Bean
+    public ConsumerFactory<String, CartaoPropostaListener> consumerFactoryCartao(){
+        StringDeserializer stringDeserializer = new StringDeserializer();
+        JsonDeserializer jsonDeserializer = new JsonDeserializer( CartaoPropostaListener.class,false);
+
+        return new DefaultKafkaConsumerFactory<String, CartaoPropostaListener>(properties(), stringDeserializer, jsonDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, CartaoPropostaListener> kafkaListenerContainerFactoryCartao(){
+        ConcurrentKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory();
+        factory.setConsumerFactory(consumerFactoryCartao());
         return factory;
     }
 }

@@ -17,15 +17,21 @@ import java.util.Optional;
 
 public class LimiteDisponivelResponseDto {
 
+    private BigDecimal limiteCartao;
+
+    private BigDecimal valorGasto;
+
     private BigDecimal limiteDisponivel;
     // +1
-    private List<Gastos> ultimasTransacoes  ;
+    private List<Gastos> ultimasTransacoes ;
 
     @Deprecated
     public LimiteDisponivelResponseDto() {
     }
     // +2
     public LimiteDisponivelResponseDto(CartaoResponseIntegracao cartaoResponseIntegracao, Optional<Fatura> faturaCartaoSolicitado) {
+        this.limiteCartao = new BigDecimal(cartaoResponseIntegracao.getLimite());
+        this.valorGasto = calculaGastosMesCorrente(faturaCartaoSolicitado);
         this.ultimasTransacoes = adicionaUltimosGastos(faturaCartaoSolicitado);
         this.limiteDisponivel = calculaLimiteDisponivel(cartaoResponseIntegracao, faturaCartaoSolicitado);
     }
@@ -36,6 +42,14 @@ public class LimiteDisponivelResponseDto {
 
     public List<Gastos> getUltimasTransacoes() {
         return ultimasTransacoes;
+    }
+
+    public BigDecimal getLimiteCartao() {
+        return limiteCartao;
+    }
+
+    public BigDecimal getValorGasto() {
+        return valorGasto;
     }
 
     public List<Gastos> adicionaUltimosGastos(Optional<Fatura> faturaCartaoSolicitado){

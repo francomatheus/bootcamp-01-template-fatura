@@ -17,25 +17,28 @@ public class Fatura {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
-
-    private String idCartao;
+    @OneToOne
+    private Cartao cartao;
     @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.EAGER)
-    List<Gastos> gastos = new ArrayList<>();
+    private List<Gastos> gastos = new ArrayList<>();
+
+    @OneToMany
+    private List<FaturaCorrente> faturaCorrentes= new ArrayList<>();
 
     @Deprecated
     public Fatura() {
     }
 
-    public Fatura(String idCartao) {
-        this.idCartao = idCartao;
+    public Fatura(Cartao cartao) {
+        this.cartao = cartao;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getIdCartao() {
-        return idCartao;
+    public Cartao getCartao() {
+        return cartao;
     }
 
     public List<Gastos> getGastos() {
@@ -68,5 +71,13 @@ public class Fatura {
 
     public Integer numeroTotalDeCompras() {
         return retornaGastosCorrentesAtuaisOrdenados().size();
+    }
+
+    public void adicionaFaturaCorrente(FaturaCorrente faturaCorrente){
+        this.faturaCorrentes.add(faturaCorrente);
+    }
+
+    public String numeroCartao(){
+        return this.cartao.getNumeroCartao();
     }
 }

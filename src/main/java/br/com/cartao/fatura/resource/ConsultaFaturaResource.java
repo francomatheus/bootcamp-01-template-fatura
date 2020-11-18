@@ -30,12 +30,12 @@ public class ConsultaFaturaResource {
     @GetMapping("/{id}")
     public ResponseEntity<?> consultaFaturaCorrente(@PathVariable(value = "id",required = true) String idCartao){
         // +1
-        logger.info("Requisição para consultar fatura recebida, para o cartão com final: {}", OfuscaDadosSensiveis.executa(idCartao));
+        logger.info("Requisição para consultar fatura recebida, para o cartão com final: {}", idCartao);
         // +1
-        Optional<Fatura> faturaBuscadaPeloIdCartao = faturaRepository.findByIdCartao(idCartao);
+        Optional<Fatura> faturaBuscadaPeloIdCartao = faturaRepository.findByCartaoIdCartao(idCartao);
         // +1
         if (faturaBuscadaPeloIdCartao.isEmpty()){
-            logger.info("Fatura não encontrada para o idCartao: {}", OfuscaDadosSensiveis.executa(idCartao));
+            logger.info("Fatura não encontrada para o idCartao: {}", idCartao);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Fatura não encontrada para idCartao solicitado.");
         }
         // +1

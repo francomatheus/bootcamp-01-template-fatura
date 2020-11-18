@@ -1,15 +1,15 @@
 package br.com.cartao.fatura.domain.listener;
 
-public class CartaoListener {
+public class CartaoResponseListener {
 
     private String id;
     private String email;
 
     @Deprecated
-    public CartaoListener() {
+    public CartaoResponseListener() {
     }
 
-    public CartaoListener(String id, String email) {
+    public CartaoResponseListener(String id, String email) {
         this.id = id;
         this.email = email;
     }
@@ -18,7 +18,7 @@ public class CartaoListener {
         return id;
     }
 
-    public CartaoListener setId(String id) {
+    public CartaoResponseListener setId(String id) {
         this.id = id;
         return this;
     }
@@ -27,7 +27,7 @@ public class CartaoListener {
         return email;
     }
 
-    public CartaoListener setEmail(String email) {
+    public CartaoResponseListener setEmail(String email) {
         this.email = email;
         return this;
     }

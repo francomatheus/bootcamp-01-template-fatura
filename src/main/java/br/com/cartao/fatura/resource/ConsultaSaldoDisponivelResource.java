@@ -1,8 +1,10 @@
 package br.com.cartao.fatura.resource;
 
 import br.com.cartao.fatura.domain.integration.CartaoResponseIntegracao;
+import br.com.cartao.fatura.domain.model.Cartao;
 import br.com.cartao.fatura.domain.model.Fatura;
 import br.com.cartao.fatura.domain.response.LimiteDisponivelResponseDto;
+import br.com.cartao.fatura.repository.CartaoRepository;
 import br.com.cartao.fatura.repository.FaturaRepository;
 import br.com.cartao.fatura.service.BuscaCartaoIntegracaoService;
 import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
@@ -25,32 +27,42 @@ public class ConsultaSaldoDisponivelResource {
 
     private static Logger logger = LoggerFactory.getLogger(ConsultaSaldoDisponivelResource.class);
     // +1
+    private final CartaoRepository cartaoRepository;
+    // +1
     private final BuscaCartaoIntegracaoService buscaCartaoIntegracaoService;
     // +1
     private final FaturaRepository faturaRepository;
 
-    public ConsultaSaldoDisponivelResource(BuscaCartaoIntegracaoService buscaCartaoIntegracaoService, FaturaRepository faturaRepository) {
+    public ConsultaSaldoDisponivelResource(CartaoRepository cartaoRepository, BuscaCartaoIntegracaoService buscaCartaoIntegracaoService, FaturaRepository faturaRepository) {
+        this.cartaoRepository = cartaoRepository;
         this.buscaCartaoIntegracaoService = buscaCartaoIntegracaoService;
         this.faturaRepository = faturaRepository;
     }
 
-    @GetMapping("/limites-disponiveis/{id}")
+    @GetMapping("/{id}/limites-disponiveis")
     public ResponseEntity<?> consultaLimiteDisponivel(@PathVariable(value = "id",required = true)String idCartao){
+        logger.info("Requisição para consultar saldo disponivel recebdio para o cartaoId: {}", idCartao);
+
         // +1
-        logger.info("Requisição para consultar saldo disponivel recebdio para o cartaoId: {}", OfuscaDadosSensiveis.executa(idCartao));
+        Optional<Cartao> cartaoBuscado = cartaoRepository.findById(idCartao);
         // +1
-        Optional<CartaoResponseIntegracao> buscaCartao = buscaCartaoIntegracaoService.busca(idCartao);
+        if(cartaoBuscado.isEmpty()){
+            logger.info("Cartão solicitado não encontrado, id: {}", idCartao);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
         // +1
-        if(buscaCartao.isEmpty()){
-            logger.info("Cartão solicidade não encontrado, id: {}", OfuscaDadosSensiveis.executa(idCartao));
+        Optional<CartaoResponseIntegracao> cartaoBuscadoSitemaLegado = buscaCartaoIntegracaoService.busca(cartaoBuscado.get().getNumeroCartao());
+        // +1
+        if(cartaoBuscadoSitemaLegado.isEmpty()){
+            logger.info("Cartão/Limite solicitado não encontrado, id: {}", idCartao);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        Integer limite = buscaCartao.get().getLimite();
+        Integer limite = cartaoBuscadoSitemaLegado.get().getLimite();
         // +1
-        Optional<Fatura> faturaCartaoSolicitado = faturaRepository.findByIdCartao(idCartao);
+        Optional<Fatura> faturaCartaoSolicitado = faturaRepository.findByCartaoIdCartao(idCartao);
         // +1
-        LimiteDisponivelResponseDto limiteDisponivelResponseDto = new LimiteDisponivelResponseDto(buscaCartao.get(), faturaCartaoSolicitado);;
+        LimiteDisponivelResponseDto limiteDisponivelResponseDto = new LimiteDisponivelResponseDto(cartaoBuscadoSitemaLegado.get(), faturaCartaoSolicitado);;
 
         logger.info("Limite disponivel calculado com sucesso: {}", limiteDisponivelResponseDto.getLimiteDisponivel());
         return ResponseEntity.ok().body(limiteDisponivelResponseDto);

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface FaturaRepository extends PagingAndSortingRepository<Fatura, String> {
 
-    Optional<Fatura> findByIdCartao(String idCartao);
+    Optional<Fatura> findByCartaoIdCartao(String idCartao);
+
+    Optional<Fatura> findByCartaoNumeroCartao(String numeroCartao);
 
 }

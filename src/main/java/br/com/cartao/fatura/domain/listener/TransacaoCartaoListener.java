@@ -1,6 +1,5 @@
 package br.com.cartao.fatura.domain.listener;
 
-import br.com.cartao.fatura.domain.model.EstabelecimentoCompra;
 import br.com.cartao.fatura.domain.model.Gastos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -20,14 +19,14 @@ public class TransacaoCartaoListener {
     // +1
     private EstabelecimentoCompraListener estabelecimento;
     // +1
-    private CartaoListener cartao;
+    private CartaoResponseListener cartao;
     @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss", shape = JsonFormat.Shape.STRING)
     private String efetivadaEm;
 
     public TransacaoCartaoListener() {
     }
 
-    public TransacaoCartaoListener(String id, BigDecimal valor, EstabelecimentoCompraListener estabelecimento, CartaoListener cartao, String efetivadaEm) {
+    public TransacaoCartaoListener(String id, BigDecimal valor, EstabelecimentoCompraListener estabelecimento, CartaoResponseListener cartao, String efetivadaEm) {
         this.id = id;
         this.valor = valor;
         this.estabelecimento = estabelecimento;
@@ -62,11 +61,11 @@ public class TransacaoCartaoListener {
         return this;
     }
 
-    public CartaoListener getCartao() {
+    public CartaoResponseListener getCartao() {
         return cartao;
     }
 
-    public TransacaoCartaoListener setCartao(CartaoListener cartao) {
+    public TransacaoCartaoListener setCartao(CartaoResponseListener cartao) {
         this.cartao = cartao;
         return this;
     }

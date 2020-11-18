@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 @RestController
@@ -23,15 +24,18 @@ public class HabilitaFaturaResource {
     @Autowired
     private final HabilitaTransacaoService habilitaTransacaoService;
 
-    public HabilitaFaturaResource(HabilitaTransacaoService habilitaTransacaoService) {
+    private final EntityManager manager;
+
+    public HabilitaFaturaResource(HabilitaTransacaoService habilitaTransacaoService, EntityManager manager) {
         this.habilitaTransacaoService = habilitaTransacaoService;
+        this.manager = manager;
     }
 
     @PostMapping("/habilita")
     public ResponseEntity<?> habilita(@RequestBody @Valid TransacaoHabilitaRequest transacaoHabilitaRequest){
         logger.info("Requisição para habilitar transações recebidas, email: {}", transacaoHabilitaRequest.getEmail());
 
-        TransacaoHabilitaIntegracaoRequest transacaoHabilitaIntegracaoRequest = transacaoHabilitaRequest.toIntegracao();
+        TransacaoHabilitaIntegracaoRequest transacaoHabilitaIntegracaoRequest = transacaoHabilitaRequest.toIntegracao(manager);
 
         habilitaTransacaoService.habilitaCartao(transacaoHabilitaIntegracaoRequest);
 

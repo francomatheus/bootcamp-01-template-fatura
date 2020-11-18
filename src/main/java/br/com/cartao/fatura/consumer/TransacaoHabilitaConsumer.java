@@ -15,5 +15,5 @@ public interface TransacaoHabilitaConsumer {
     public TransacaoHabilitaIntegracaoResponse habilita(@RequestBody TransacaoHabilitaIntegracaoRequest transacaoHabilitaIntegracaoRequest);
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/api/cartoes/{id}")
-    public void desabilita(@PathVariable(value = "id",required = true)String idCartao);
+    public void desabilita(@PathVariable(value = "id",required = true)String numeroCartao);
 }
