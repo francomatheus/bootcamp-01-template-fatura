@@ -18,7 +18,7 @@ public class FaturaCorrente {
     @OneToOne
     private Cartao cartao;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     List<Gastos> gastos = new ArrayList<>();
 
     @Deprecated

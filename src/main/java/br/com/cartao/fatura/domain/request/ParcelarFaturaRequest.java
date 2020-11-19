@@ -46,7 +46,7 @@ public class ParcelarFaturaRequest {
         // +1
         FaturaCorrente faturaCorrente = new FaturaCorrente(fatura.getCartao(), gastosFaturaCorrente);
 
-        fatura.adicionaFaturaCorrente(faturaCorrente);
+//        fatura.adicionaFaturaCorrente(faturaCorrente);
 
         return new ParcelaFatura(this.quantidade, this.valor, faturaCorrente);
     }

@@ -22,8 +22,8 @@ public class Fatura {
     @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<Gastos> gastos = new ArrayList<>();
 
-    @OneToMany
-    private List<FaturaCorrente> faturaCorrentes= new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private List<FaturaCorrente> faturaCorrentes= new ArrayList<>();
 
     @Deprecated
     public Fatura() {
@@ -73,9 +73,9 @@ public class Fatura {
         return retornaGastosCorrentesAtuaisOrdenados().size();
     }
 
-    public void adicionaFaturaCorrente(FaturaCorrente faturaCorrente){
-        this.faturaCorrentes.add(faturaCorrente);
-    }
+//    public void adicionaFaturaCorrente(FaturaCorrente faturaCorrente){
+//        this.faturaCorrentes.add(faturaCorrente);
+//    }
 
     public String numeroCartao(){
         return this.cartao.getNumeroCartao();

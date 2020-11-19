@@ -1,14 +1,10 @@
 package br.com.cartao.fatura.resource;
 
-import br.com.cartao.fatura.domain.integration.CartaoResponseIntegracao;
 import br.com.cartao.fatura.domain.model.Cartao;
 import br.com.cartao.fatura.domain.model.ParcelaFatura;
 import br.com.cartao.fatura.domain.request.ParcelarFaturaRequest;
 import br.com.cartao.fatura.domain.response.ParcelarFaturaResponseDto;
 import br.com.cartao.fatura.repository.CartaoRepository;
-import br.com.cartao.fatura.repository.ParcelaFaturaRepository;
-import br.com.cartao.fatura.service.BuscaCartaoIntegracaoService;
-import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -55,7 +51,7 @@ public class ParcelarFaturaResource {
         // +1
         if (cartaoBuscado.isEmpty()){
             logger.info("Cartão não existe, id: {}", idCartao);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         // +1
         ParcelaFatura parcelaFatura = parcelarFaturaRequest.toModel(idFatura, manager);

@@ -3,7 +3,6 @@ package br.com.cartao.fatura.resource;
 import br.com.cartao.fatura.domain.model.Fatura;
 import br.com.cartao.fatura.domain.response.FaturaResponseDto;
 import br.com.cartao.fatura.repository.FaturaRepository;
-import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,7 @@ public class ConsultaFaturaResource {
         // +1
         if (faturaBuscadaPeloIdCartao.isEmpty()){
             logger.info("Fatura não encontrada para o idCartao: {}", idCartao);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Fatura não encontrada para idCartao solicitado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fatura não encontrada para idCartao solicitado.");
         }
         // +1
         FaturaResponseDto faturaResponseDto =  new FaturaResponseDto(faturaBuscadaPeloIdCartao.get());

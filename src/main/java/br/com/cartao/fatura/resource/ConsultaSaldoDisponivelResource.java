@@ -7,7 +7,6 @@ import br.com.cartao.fatura.domain.response.LimiteDisponivelResponseDto;
 import br.com.cartao.fatura.repository.CartaoRepository;
 import br.com.cartao.fatura.repository.FaturaRepository;
 import br.com.cartao.fatura.service.BuscaCartaoIntegracaoService;
-import br.com.cartao.fatura.utils.OfuscaDadosSensiveis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -48,14 +47,14 @@ public class ConsultaSaldoDisponivelResource {
         // +1
         if(cartaoBuscado.isEmpty()){
             logger.info("Cartão solicitado não encontrado, id: {}", idCartao);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         // +1
         Optional<CartaoResponseIntegracao> cartaoBuscadoSitemaLegado = buscaCartaoIntegracaoService.busca(cartaoBuscado.get().getNumeroCartao());
         // +1
         if(cartaoBuscadoSitemaLegado.isEmpty()){
             logger.info("Cartão/Limite solicitado não encontrado, id: {}", idCartao);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         Integer limite = cartaoBuscadoSitemaLegado.get().getLimite();
